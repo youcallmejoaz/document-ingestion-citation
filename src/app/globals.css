@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Design tokens. Light and dark are each chosen, not inverted. The series and
+   status colors come from a palette validated for color-vision deficiency. */
+:root {
+  color-scheme: light;
+  --page: #f4f4f1;
+  --surface: #fcfcfb;
+  --surface-2: #f0efec;
+  --line: #e2e1dc;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #75746f;
+  --accent: #2a78d6;
+  --accent-ink: #1c5cab;
+  --accent-soft: #e6f0fc;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --good: #0a7d0a;
+  --critical: #c03434;
+  --critical-soft: #fbeaea;
+  --warn-soft: #fff4dc;
+  --warn-ink: #7a5200;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #121211;
+    --surface: #1a1a19;
+    --surface-2: #232321;
+    --line: #34342f;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --ink-3: #9a998f;
+    --accent: #3987e5;
+    --accent-ink: #86b6ef;
+    --accent-soft: #16273d;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --good: #3fbf3f;
+    --critical: #e66767;
+    --critical-soft: #3a1d1d;
+    --warn-soft: #3a2e12;
+    --warn-ink: #f5c35a;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #121211;
+  --surface: #1a1a19;
+  --surface-2: #232321;
+  --line: #34342f;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --ink-3: #9a998f;
+  --accent: #3987e5;
+  --accent-ink: #86b6ef;
+  --accent-soft: #16273d;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --good: #3fbf3f;
+  --critical: #e66767;
+  --critical-soft: #3a1d1d;
+  --warn-soft: #3a2e12;
+  --warn-ink: #f5c35a;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-good: var(--good);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-warn-soft: var(--warn-soft);
+  --color-warn-ink: var(--warn-ink);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

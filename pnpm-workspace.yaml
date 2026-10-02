@@ -1,0 +1,5 @@
+onlyBuiltDependencies:
+  - "@google/genai"
+  - protobufjs
+  - unrs-resolver
+  - sharp
