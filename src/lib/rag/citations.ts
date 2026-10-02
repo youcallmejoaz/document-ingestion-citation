@@ -1,3 +1,4 @@
+import { sectionPath } from "@/lib/ingest/chunk";
 import type { Citation, MatchedChunk } from "@/lib/types";
 
 const MARKER = /\[(\d+(?:\s*,\s*\d+)*)\]/g;
@@ -51,7 +52,7 @@ export function resolveCitations(text: string, sources: MatchedChunk[]): Citatio
         chunkId: c.id,
         documentId: c.document_id,
         documentTitle: c.document_title,
-        headingPath: c.heading_path,
+        headingPath: sectionPath(c.document_title, c.heading_path),
         pageStart: c.page_start,
         pageEnd: c.page_end,
         snippet: snippetOf(c.content),

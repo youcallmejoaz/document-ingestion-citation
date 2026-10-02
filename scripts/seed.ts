@@ -105,10 +105,10 @@ async function main() {
 
 type Admin = ReturnType<typeof import("../src/lib/supabase/admin").createAdminClient>;
 
-const ANSWERED = [
-  { q: "How do I process a refund over $500?", doc: "Refund and Returns Policy", section: "How to process a refund", w: 9 },
-  { q: "Who approves a $300 refund?", doc: "Refund and Returns Policy", section: "Approval limits", w: 7 },
-  { q: "How fast do we need to reply to emails?", doc: "Customer Service Standards", section: "Response times", w: 8 },
+const ANSWERED: { q: string; doc: string; section: string; w: number; comment?: string }[] = [
+  { q: "How do I process a refund over $500?", doc: "Refund and Returns Policy", section: "How to process a refund", w: 9, comment: "Form RF-12 was replaced by an online approval in the billing system." },
+  { q: "Who approves a $300 refund?", doc: "Refund and Returns Policy", section: "Approval limits", w: 7, comment: "The team lead limit went up to $750 last quarter." },
+  { q: "How fast do we need to reply to emails?", doc: "Customer Service Standards", section: "Response times", w: 8, comment: "Doesn't say what counts as business hours on public holidays." },
   { q: "How do I handle a customer complaint?", doc: "Customer Service Standards", section: "Handling complaints", w: 6 },
   { q: "Which templates do I use for client onboarding?", doc: "Client Onboarding SOP", section: "Templates", w: 5 },
   { q: "When should the kickoff call happen?", doc: "Client Onboarding SOP", section: "Before the kickoff call", w: 5 },
@@ -232,7 +232,7 @@ async function seedActivity(admin: Admin, ids: Record<string, string>) {
           user_id: userId,
           rating: down ? "down" : "up",
           reason: down ? reasons[Math.floor(rand() * reasons.length)] : null,
-          comment: down && rand() < 0.5 ? "The approval limit changed last quarter." : null,
+          comment: down ? ((item as (typeof ANSWERED)[number]).comment ?? null) : null,
           created_at: later,
         });
       }

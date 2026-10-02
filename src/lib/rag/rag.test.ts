@@ -109,3 +109,17 @@ describe("mock provider", () => {
     expect(mockAnswer("Question: q")).toBe(NOT_FOUND);
   });
 });
+
+describe("display helpers", () => {
+  it("drops a repeated document title from the section path", async () => {
+    const { sectionPath } = await import("@/lib/ingest/chunk");
+    expect(sectionPath("Refund Policy", "Refund Policy > Approval")).toBe("Approval");
+    expect(sectionPath("Refund Policy", "Approval > Limits")).toBe("Approval > Limits");
+    expect(sectionPath("Refund Policy", "Refund Policy")).toBe("");
+  });
+
+  it("picks a tight axis maximum", async () => {
+    const { niceMax } = await import("@/lib/chart-scale");
+    expect([3, 15, 37, 120, 999].map(niceMax)).toEqual([4, 20, 40, 200, 1000]);
+  });
+});

@@ -79,6 +79,7 @@ describe("chunkBlocks", () => {
   });
 
   it("prefixes embedded text with the document and section", () => {
-    expect(contextualText("Refund Policy", chunks[0])).toMatch(/^Refund Policy > Refund Policy > Eligibility\n\nCustomers/);
+    expect(contextualText("Refund Policy", chunks[0])).toMatch(/^Refund Policy > Eligibility\n\nCustomers/);
+    expect(contextualText("Other Title", chunks[0])).toMatch(/^Other Title > Refund Policy > Eligibility\n/);
   });
 });

@@ -62,11 +62,15 @@ export function mockAnswer(prompt: string): string {
   }));
   if (sources.length === 0) return NOT_FOUND;
 
-  const parts = sources.slice(0, 2).map(({ id, text }) => {
+  const question = new Set(tokenize(/Question: (.*)$/s.exec(prompt)?.[1] ?? ""));
+  const overlap = (text: string) => new Set(tokenize(text).filter((t) => question.has(t))).size;
+  const chosen = sources.slice(0, 2).filter((s, i) => i === 0 || overlap(s.text) >= 2);
+
+  const parts = chosen.map(({ id, text }) => {
     const lines = text
       .split("\n")
       .map((l) => l.trim())
-      .filter(Boolean);
+      .filter((l) => l && !l.includes(" | "));
     const steps = lines.filter((l) => /^(\d+[.)]|[-*•])\s/.test(l));
     if (steps.length >= 2) {
       return steps
@@ -75,9 +79,10 @@ export function mockAnswer(prompt: string): string {
         .join("\n");
     }
     const sentences = lines.join(" ").match(/[^.!?]+[.!?]+/g) ?? [lines.join(" ")];
-    return `${sentences.slice(0, 2).join(" ").trim()} [${id}]`;
+    const prose = sentences.slice(0, 2).join(" ").trim();
+    return prose ? `${prose} [${id}]` : "";
   });
-  return `Here's what the documents say:\n\n${parts.join("\n\n")}`;
+  return `Here's what the documents say:\n\n${parts.filter(Boolean).join("\n\n")}`;
 }
 
 export class MockAnswerProvider implements AnswerProvider {

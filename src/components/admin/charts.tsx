@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { niceMax } from "@/lib/chart-scale";
 
 export interface DailyPoint {
   day: string; // YYYY-MM-DD
   answered: number;
   unanswered: number;
-}
-
-function niceMax(v: number) {
-  if (v <= 4) return 4;
-  const pow = 10 ** Math.floor(Math.log10(v));
-  const step = [1, 2, 2.5, 5, 10].map((m) => m * pow).find((s) => s * 4 >= v) ?? pow * 10;
-  return step * 4;
 }
 
 function shortDate(day: string) {

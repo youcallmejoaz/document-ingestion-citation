@@ -157,6 +157,14 @@ export function chunkBlocks(blocks: Block[], options: ChunkOptions = {}): Chunk[
 
 /** Text that is embedded: the chunk prefixed with where it sits in the document. */
 export function contextualText(documentTitle: string, chunk: Pick<Chunk, "headingPath" | "content">): string {
-  const where = chunk.headingPath ? `${documentTitle}${HEADING_SEPARATOR}${chunk.headingPath}` : documentTitle;
+  const section = sectionPath(documentTitle, chunk.headingPath);
+  const where = section ? `${documentTitle}${HEADING_SEPARATOR}${section}` : documentTitle;
   return `${where}\n\n${chunk.content}`;
+}
+
+/** The heading path without a leading document title, which most documents repeat as their first heading. */
+export function sectionPath(documentTitle: string, headingPath: string): string {
+  const parts = headingPath ? headingPath.split(HEADING_SEPARATOR) : [];
+  if (parts[0]?.trim().toLowerCase() === documentTitle.trim().toLowerCase()) parts.shift();
+  return parts.join(HEADING_SEPARATOR);
 }

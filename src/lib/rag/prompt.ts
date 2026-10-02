@@ -1,4 +1,5 @@
 import type { ChatTurn } from "@/lib/ai/provider";
+import { sectionPath } from "@/lib/ingest/chunk";
 import type { MatchedChunk } from "@/lib/types";
 
 /** What the model must output when the sources do not answer the question. */
@@ -36,12 +37,13 @@ export function formatSources(chunks: MatchedChunk[]): string {
   const body = chunks
     .map((c, i) => {
       const p = pages(c);
+      const section = sectionPath(c.document_title, c.heading_path);
       // Stop a document from closing its own <source> tag and injecting text
       // that would look like it sits outside the reference material.
       const content = c.content.replace(/<\/?\s*sources?\b/gi, (m) => m.replace("<", "&lt;"));
       return (
         `<source id="${i + 1}" document="${attr(c.document_title)}"` +
-        (c.heading_path ? ` section="${attr(c.heading_path)}"` : "") +
+        (section ? ` section="${attr(section)}"` : "") +
         (p ? ` pages="${p}"` : "") +
         `>\n${content}\n</source>`
       );
