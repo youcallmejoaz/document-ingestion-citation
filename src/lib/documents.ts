@@ -1,4 +1,3 @@
-import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { ingestDocument, prepareChunks, sha256, storeChunks } from "@/lib/ingest/pipeline";

@@ -216,7 +216,10 @@ export function pdfPagesToBlocks(pages: string[]): Block[] {
 
       const numbered = PDF_NUMBERED_HEADING.exec(line);
       const item = PDF_LIST_ITEM.exec(line);
-      if (numbered && !/[.!?]$/.test(line) && numbered[1].split(".").length <= 3 && line.length <= 90) {
+      const isTitle = blocks.length === 0 && !open && line.length <= 80 && !/[.!?:,]$/.test(line) && !item;
+      if (isTitle) {
+        blocks.push({ type: "heading", level: 1, text: line, page });
+      } else if (numbered && !/[.!?]$/.test(line) && numbered[1].split(".").length <= 3 && line.length <= 90) {
         close();
         blocks.push({ type: "heading", level: numbered[1].split(".").length + 1, text: line, page });
       } else if (isAllCapsHeading(line)) {

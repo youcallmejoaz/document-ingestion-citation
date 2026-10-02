@@ -1,0 +1,50 @@
+[
+  {
+    "source": "client-onboarding-sop.md",
+    "file": "Client-Onboarding-SOP.pdf",
+    "title": "Client Onboarding SOP",
+    "department": "Client Services",
+    "description": "Steps from signed agreement to first report and 30-day check-in.",
+    "allowedRoles": ["staff", "manager", "hr", "admin"]
+  },
+  {
+    "source": "refund-returns-policy.md",
+    "file": "Refund-and-Returns-Policy.docx",
+    "title": "Refund and Returns Policy",
+    "department": "Finance",
+    "description": "Eligibility, approval limits and the refund procedure.",
+    "allowedRoles": ["staff", "manager", "hr", "admin"]
+  },
+  {
+    "source": "service-standards.md",
+    "file": "Customer-Service-Standards.md",
+    "title": "Customer Service Standards",
+    "department": "Customer Service",
+    "description": "Response times, tone of voice and complaint handling.",
+    "allowedRoles": ["staff", "manager", "hr", "admin"]
+  },
+  {
+    "source": "new-starter-guide.md",
+    "file": "New-Starter-Guide.docx",
+    "title": "New Starter Guide",
+    "department": "People",
+    "description": "First day, first week and who to ask.",
+    "allowedRoles": ["staff", "manager", "hr", "admin"]
+  },
+  {
+    "source": "incident-escalation-sop.md",
+    "file": "Incident-Escalation-SOP.pdf",
+    "title": "Incident Escalation SOP",
+    "department": "Operations",
+    "description": "Severity levels, out-of-hours escalation and data breaches.",
+    "allowedRoles": ["manager", "admin"]
+  },
+  {
+    "source": "hr-leave-disciplinary-policy.md",
+    "file": "HR-Leave-and-Disciplinary-Policy.pdf",
+    "title": "HR Leave and Disciplinary Policy",
+    "department": "People",
+    "description": "Annual leave, sickness absence and the disciplinary procedure.",
+    "allowedRoles": ["hr", "admin"]
+  }
+]

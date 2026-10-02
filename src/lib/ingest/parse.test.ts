@@ -68,3 +68,12 @@ describe("mimeTypeFor", () => {
     expect(() => mimeTypeFor("sheet.xlsx")).toThrow(/Unsupported/);
   });
 });
+
+describe("pdfPagesToBlocks title", () => {
+  it("treats a short first line as the document title", () => {
+    expect(pdfPagesToBlocks(["Refund Policy\nOwner: Finance. Version 2.\n1 Scope\nAll staff."]).slice(0, 2)).toEqual([
+      { type: "heading", level: 1, text: "Refund Policy", page: 1 },
+      { type: "paragraph", text: "Owner: Finance. Version 2.", page: 1 },
+    ]);
+  });
+});

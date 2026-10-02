@@ -51,6 +51,15 @@ select public.replace_document_chunks('10000000-0000-0000-0000-000000000003',
 
 select pg_temp.assert((select roles from public.profiles where email = 'staff@test') = '{staff}', 'profile created with app_metadata roles');
 select pg_temp.assert((select roles from public.profiles where email = 'sneaky@test') = '{staff}', 'user_metadata cannot grant roles');
+
+-- Supabase Auth sets app_metadata in an UPDATE after the INSERT.
+insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000e', 'late@test');
+update auth.users set raw_app_meta_data = '{"provider":"email","roles":["staff","manager"]}' where email = 'late@test';
+select pg_temp.assert((select roles from public.profiles where email = 'late@test') = '{staff,manager}', 'roles set by a later app_metadata update are synced');
+update auth.users set raw_app_meta_data = raw_app_meta_data || '{"providers":["email"]}' where email = 'late@test';
+update public.profiles set roles = '{staff,hr}' where email = 'late@test';
+update auth.users set raw_app_meta_data = raw_app_meta_data || '{"last":"x"}' where email = 'late@test';
+select pg_temp.assert((select roles from public.profiles where email = 'late@test') = '{staff,hr}', 'unrelated app_metadata updates keep admin-edited roles');
 select pg_temp.assert((select status from public.documents where id = '10000000-0000-0000-0000-000000000003') = 'retired', 'replace_document_chunks sets status');
 
 -- ---- staff ----

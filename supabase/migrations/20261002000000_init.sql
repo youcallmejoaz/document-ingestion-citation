@@ -24,23 +24,27 @@ create table public.profiles (
 
 -- Roles come from app_metadata (only settable with the service role), never
 -- from user_metadata, which a user can write at sign-up.
+create function public.roles_from_app_metadata(meta jsonb) returns text[]
+language sql immutable
+as $$
+  select nullif(array(
+    select r from jsonb_array_elements_text(
+      case when jsonb_typeof(meta -> 'roles') = 'array' then meta -> 'roles' else '[]'::jsonb end
+    ) as r
+    where r in ('staff', 'manager', 'hr', 'admin')
+  ), '{}');
+$$;
+
 create function public.handle_new_user() returns trigger
 language plpgsql security definer set search_path = public
 as $$
-declare
-  initial_roles text[];
 begin
-  select coalesce(array_agg(r), '{staff}')
-    into initial_roles
-    from jsonb_array_elements_text(coalesce(new.raw_app_meta_data -> 'roles', '[]'::jsonb)) as r
-   where r in ('staff', 'manager', 'hr', 'admin');
-
   insert into public.profiles (id, email, full_name, roles)
   values (
     new.id,
     coalesce(new.email, ''),
     new.raw_user_meta_data ->> 'full_name',
-    initial_roles
+    coalesce(public.roles_from_app_metadata(new.raw_app_meta_data), '{staff}')
   );
   return new;
 end;
@@ -49,6 +53,30 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- Supabase Auth writes app_metadata in a separate UPDATE after creating the
+-- user, and admins may set it later via the Auth admin API, so keep the
+-- profile in step whenever app_metadata.roles changes.
+create function public.handle_user_roles_changed() returns trigger
+language plpgsql security definer set search_path = public
+as $$
+declare
+  new_roles text[] := public.roles_from_app_metadata(new.raw_app_meta_data);
+begin
+  if new_roles is not null
+     and new_roles is distinct from public.roles_from_app_metadata(old.raw_app_meta_data) then
+    update public.profiles set roles = new_roles where id = new.id;
+  end if;
+  if new.email is distinct from old.email then
+    update public.profiles set email = coalesce(new.email, '') where id = new.id;
+  end if;
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_updated
+  after update of raw_app_meta_data, email on auth.users
+  for each row execute function public.handle_user_roles_changed();
 
 create function public.current_user_roles() returns text[]
 language sql stable security definer set search_path = public
